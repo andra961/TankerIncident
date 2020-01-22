@@ -44,6 +44,7 @@ SOURCES += \
     algorithms/cvrp.cpp \
     algorithms/cvrpar.cpp \
     algorithms/cvrputils.cpp \
+    data_structures/adjacency_list.cpp \
     data_structures/node.cpp \
     data_structures/route.cpp \
     data_structures/topology.cpp \
@@ -59,6 +60,7 @@ HEADERS += \
     algorithms/cvrp.h \
     algorithms/cvrpar.h \
     algorithms/cvrputils.h \
+    data_structures/adjacency_list.h \
     data_structures/node.h \
     data_structures/route.h \
     data_structures/topology.h \
