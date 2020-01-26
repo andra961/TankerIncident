@@ -104,6 +104,18 @@ void CVRPmanager::computeCvrpAlgorithm(const Topology& topology) {
     case(7):
         cWparRandomized(topology,this->singleRoutes);
         break;
+    /*case(8):
+
+        Adjacency_list network(4);
+        network.addArc(0,1,10,0,10);
+        network.addArc(0,2,6,0,6);
+        network.addArc(1,2,1,0,1);
+        network.addArc(1,3,8,0,8);
+        network.addArc(2,3,10,0,10);
+
+        Adjacency_list residual = convertToResidual(network);
+        int i = 0;
+        i++;*/
     }
 }
 
@@ -196,7 +208,7 @@ void CVRPmanager::fitScene() {
  */
 void CVRPmanager::on_loadFilePushButton_clicked() {
     //File selector
-    QString filename = QFileDialog::getOpenFileName(nullptr,
+    /*QString filename = QFileDialog::getOpenFileName(nullptr,
                        "Open points",
                        ".",
                        "*.txt");
@@ -257,7 +269,22 @@ void CVRPmanager::on_loadFilePushButton_clicked() {
 
         //Draw the routes
         drawRoutes();
+
     }
+    */
+
+    Adjacency_list network(4);
+    network.addArc(0,1,10);
+    network.addArc(0,2,6);
+    network.addArc(1,2,1);
+    network.addArc(1,3,8);
+    network.addArc(2,3,10);
+    Adjacency_list residual = convertToResidual(network);
+    std::vector<pFPnode> nodes;
+    nodes.resize(4);
+    computeDistanceLabels(network, nodes);
+    int i = 0;
+    i++;
 }
 
 /**

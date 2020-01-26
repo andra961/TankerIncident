@@ -44,8 +44,11 @@ SOURCES += \
     algorithms/cvrp.cpp \
     algorithms/cvrpar.cpp \
     algorithms/cvrputils.cpp \
+    algorithms/preflowpush.cpp \
     data_structures/adjacency_list.cpp \
+    data_structures/arc.cpp \
     data_structures/node.cpp \
+    data_structures/pfpnode.cpp \
     data_structures/route.cpp \
     data_structures/topology.cpp \
     drawable_objects/drawable_route.cpp \
@@ -60,8 +63,11 @@ HEADERS += \
     algorithms/cvrp.h \
     algorithms/cvrpar.h \
     algorithms/cvrputils.h \
+    algorithms/preflowpush.h \
     data_structures/adjacency_list.h \
+    data_structures/arc.h \
     data_structures/node.h \
+    data_structures/pfpnode.h \
     data_structures/route.h \
     data_structures/topology.h \
     drawable_objects/drawable_route.h \

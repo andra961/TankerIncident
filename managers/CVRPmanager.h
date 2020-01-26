@@ -11,6 +11,10 @@
 
 #include <drawable_objects/drawable_route.h>
 
+#include <algorithms/preflowpush.h>
+
+#include <data_structures/adjacency_list.h>
+
 
 namespace Ui {
     class CVRPmanager;

@@ -3,16 +3,21 @@
 
 #include <vector>
 #include <array>
+#include <data_structures/arc.h>
 
 class Adjacency_list
 {
 public:
-    Adjacency_list();
-    void addNode(int node);
-    void addToAdjacencyList(int origin, int destination, int capacity, int flow, int residual);
+    Adjacency_list(int nNodes);
+    void addArc(int origin, int destination, int capacity);
+    void addArc(int origin, Arc arc);
+    bool updateArc(int origin, int destination, int capacity);
+    bool deleteArc(int origin, int destination);
+
+    std::vector<std::vector<Arc>>& getAdjacency_lists();
 
 protected:
-    std::vector<std::vector<std::array<int,4>>>  adjacency_lists;
+    std::vector<std::vector<Arc>> adjacency_lists;
 };
 
 #endif // ADJACENCY_LIST_H
