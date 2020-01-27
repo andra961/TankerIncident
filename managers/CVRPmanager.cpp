@@ -273,16 +273,33 @@ void CVRPmanager::on_loadFilePushButton_clicked() {
     }
     */
 
-    Adjacency_list network(4);
-    network.addArc(0,1,10);
-    network.addArc(0,2,6);
-    network.addArc(1,2,1);
-    network.addArc(1,3,8);
-    network.addArc(2,3,10);
-    Adjacency_list residual = convertToResidual(network);
+    Adjacency_list network(14);
+    network.addArc(0,0,1,5);
+    network.addArc(0,0,2,5);
+    network.addArc(0,0,4,5);
+    network.addArc(0,1,3,5);
+    network.addArc(0,3,0,5);
+    network.addArc(0,4,9,5);
+    network.addArc(0,3,5,5);
+    network.addArc(0,5,6,5);
+    network.addArc(0,5,10,5);
+    network.addArc(0,6,7,5);
+    network.addArc(0,7,11,5);
+    network.addArc(0,9,12,5);
+    network.addArc(0,12,8,5);
+    network.addArc(0,8,9,5);
+    network.addArc(0,8,13,5);
+    network.addArc(0,2,4,5);
+    network.addArc(0,6,3,5);
+    network.addArc(0,10,8,5);
+    network.addArc(0,11,13,5);
+
+    //Adjacency_list residual = convertToResidual(network);
     std::vector<pFPnode> nodes;
-    nodes.resize(4);
-    computeDistanceLabels(network, nodes);
+    nodes.resize(14);
+    //computeDistanceLabels(network, nodes);
+
+    preProcess(network,nodes);
     int i = 0;
     i++;
 }

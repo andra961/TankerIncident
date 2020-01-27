@@ -5,8 +5,10 @@
 #include <data_structures/pfpnode.h>
 #include <queue>
 
-Adjacency_list convertToResidual(Adjacency_list network);
+Adjacency_list convertToResidual(Adjacency_list& network);
 
-void computeDistanceLabels(Adjacency_list network,std::vector<pFPnode> nodes);
+void computeDistanceLabels(Adjacency_list& network,std::vector<pFPnode>& nodes);
+
+void preProcess(Adjacency_list& network, std::vector<pFPnode>& nodes);
 
 #endif // PREFLOWPUSH_H
