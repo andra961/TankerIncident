@@ -11,14 +11,15 @@ Adjacency_list convertToResidual(Adjacency_list& network)
         {
             Arc currentArc = network.getAdjacency_lists()[i][j];
             Arc residualArcIJ = Arc(1,currentArc.getOrigin(),currentArc.getDestination(),currentArc.getCapacity());
-            Arc residualArcJI = Arc(0,currentArc.getDestination(),int(i),currentArc.getCapacity());
+            Arc residualArcJI = Arc(0,currentArc.getDestination(),currentArc.getOrigin(),currentArc.getCapacity());
+
             //inizializzo il mate di ij, che sarà l'indice dove ji si trova nella lista di adiacenza di j
             size_t mate1 = residualNetwork.getAdjacency_lists()[currentArc.getDestination()].size();
             //inizializzo il mate di ji, che sarà l'indice dove ij si trova nella lista di adiacenza di i
             size_t mate2 = residualNetwork.getAdjacency_lists()[currentArc.getOrigin()].size();
             residualArcIJ.setMate(mate1);
             residualArcJI.setMate(mate2);
-            residualNetwork.addArc(i,residualArcIJ);
+            residualNetwork.addArc(currentArc.getOrigin(),residualArcIJ);
             residualNetwork.addArc(currentArc.getDestination(),residualArcJI);
         }
     }
@@ -26,6 +27,34 @@ Adjacency_list convertToResidual(Adjacency_list& network)
     return residualNetwork;
 }
 
+bool hasActiveNodes(std::vector<pFPnode>& nodes)
+{
+    bool hasActiveNodes = 0;
+
+    for(size_t i = 1;i < nodes.size() -1;i++)
+    {
+        if(nodes[i].getExcess() > 0) hasActiveNodes = 1;
+    }
+
+    return hasActiveNodes;
+}
+
+size_t getHighestLabelActiveNode(std::vector<pFPnode>& nodes)
+{
+    int currentDistance = 0;
+    size_t activeNode = 0;
+
+    for(size_t i = 1;i < nodes.size() -1;i++)
+    {
+        if(nodes[i].getExcess() > 0 && nodes[i].getDistanceLabel() > currentDistance)
+        {
+            currentDistance = nodes[i].getDistanceLabel();
+            activeNode = i;
+        }
+    }
+
+    return activeNode;
+}
 
 void computeDistanceLabels(Adjacency_list& network,std::vector<pFPnode>& nodes)
 {
@@ -91,47 +120,139 @@ void preProcess(Adjacency_list& network, std::vector<pFPnode>& nodes)
         nodes[network.getAdjacency_lists()[0][i].getDestination()].setExcess(flowAmount);
     }
     //imposto d(s) = n
-    nodes.back().setDistanceLabel(nodes.size());
+    nodes.front().setDistanceLabel(nodes.size());
 
 }
 
 void pushRelabel(Adjacency_list& network, std::vector<pFPnode>& nodes, size_t activeNode)
 {
-    //bool che indica la presenza di archi ammissibili dal nodo attivo
+    //bool che indica la presenza di archi ammissibili uscenti dal nodo attivo
     bool hasAdmArc = 0;
     //scorro gli archi uscenti dal nodo attivo
     for(size_t i = 0; i<network.getAdjacency_lists()[activeNode].size() && !hasAdmArc; i++)
     {
         Arc current = network.getAdjacency_lists()[activeNode][i];
         //se l'arco i j è ammissibile, ovvero d(j)<=d(i)+1:
-        if(nodes[current.getDestination()].getDistanceLabel() <= nodes[current.getOrigin()].getDistanceLabel() + 1)
+        if(nodes[current.getDestination()].getDistanceLabel() + 1 == nodes[current.getOrigin()].getDistanceLabel() && current.getResidual() > 0)
         {
+            //ho trovato un arco ammissibile
             hasAdmArc = 1;
+            //il flusso corrente nell'arco ammissibile
+            int oldFlow = network.getAdjacency_lists()[activeNode][i].getFlow();
+            int deltaFlow = 0;
             int newFlow = 0;
 
             //se il residuale è minore dell'eccesso di i:
             if(current.getResidual() <= nodes[current.getOrigin()].getExcess())
             {
-                //aumento il flusso del residuale,saturandolo
-                newFlow = network.getAdjacency_lists()[activeNode][i].getFlow() + current.getResidual();
+                //la quantità di cui aumentare il flusso sarà uguale al residuale,saturandolo
+                deltaFlow = current.getResidual();
             }
             else
             {
-                //aumento il flusso di tutto l'eccesso di i
-                newFlow = network.getAdjacency_lists()[activeNode][i].getFlow() + nodes[current.getOrigin()].getExcess();
+                //la quantità di cui aumentare il flusso sarà uguale all'eccesso,saturandolo
+                deltaFlow = nodes[current.getOrigin()].getExcess();
             }
+            //il flusso aumentato
+            if(current.getResidualType())
+            {
+                newFlow = oldFlow + deltaFlow;
+            }
+            else
+            {
+                newFlow = oldFlow - deltaFlow;
+            }
+
             //imposto il flusso nell'arco
-            network.getAdjacency_lists()[activeNode][i].setFlow(newFlow);
-            //devo impostare il flusso nel mate dell'arco, accedendo con [destination][mate] nella rete
-            //devo aumentare l'eccesso nel nodo destinazione
-            //devo
+
+            //network.getAdjacency_lists()[activeNode][i].setFlow(newFlow);
+
+            network.getAdjacency_lists()[activeNode][i].pushFlow(deltaFlow);
+            //imposto il flusso nel mate dell'arco, accedendo con [destination][mate] nella rete
+
+            network.getAdjacency_lists()[current.getDestination()][current.getMate()].setFlow(newFlow);
+
+            //network.getAdjacency_lists()[current.getDestination()][current.getMate()].pushFlow(deltaFlow);
+
+
+            //diminuisco l'eccesso del nodo origine dell'ammontare del flusso
+            nodes[current.getOrigin()].decreaseExcess(deltaFlow);
+            //aumento l'eccesso del nodo destinazione dell'ammontare del flusso
+            nodes[current.getDestination()].increaseExcess(deltaFlow);
         }
     }
-
+    //se il noto attivo non ha archi ammissibili
     if(!hasAdmArc)
     {
         //aggiorno la distance label di active node
+        int minDistance = 10000;
+        int currentDistance;
+
+        //scorro gli archi adiacenti
+        for(size_t i = 0;i < network.getAdjacency_lists()[activeNode].size();i++)
+        {
+            currentDistance = nodes[network.getAdjacency_lists()[activeNode][i].getDestination()].getDistanceLabel();
+            //salvo la minima distance label della destinazione dell'arco
+            if(currentDistance < minDistance && network.getAdjacency_lists()[activeNode][i].getResidual() > 0)
+            {
+                minDistance = currentDistance;
+            }
+        }
+        //setto la distance label con la distanza minima
+        nodes[activeNode].setDistanceLabel(minDistance+1);
     }
 }
 
+void preFlowPush(Adjacency_list& network)
+{
+    std::vector<pFPnode> nodes;
+    nodes.resize(network.getAdjacency_lists().size());
+
+    preProcess(network,nodes);
+    Adjacency_list residualNetwork = convertToResidual(network);
+
+    for(size_t i = 0; i<residualNetwork.getAdjacency_lists()[0].size();i++)
+    {
+        Arc currentArc = residualNetwork.getAdjacency_lists()[0][i];
+        //capacità massima dell'arco
+        int flowAmount = residualNetwork.getAdjacency_lists()[0][i].getCapacity();
+        //saturo l'arco
+        residualNetwork.getAdjacency_lists()[0][i].pushFlow(flowAmount);
+        residualNetwork.getAdjacency_lists()[currentArc.getDestination()][currentArc.getMate()].setFlow(flowAmount);
+        //aumento l'eccesso
+        nodes[network.getAdjacency_lists()[0][i].getDestination()].setExcess(flowAmount);
+    }
+
+    while(hasActiveNodes(nodes))
+    {
+        pushRelabel(residualNetwork,nodes,getHighestLabelActiveNode(nodes));
+    }
+
+    std::string path = "/home/andrea/preFlow_results";
+
+    writeResultsOnFile(residualNetwork,path);
+}
+
+void writeResultsOnFile(Adjacency_list& network,std::string& path)
+{
+    std::ofstream myfile (path);
+
+    myfile << "i,      j,      uij";
+    myfile << "\n\n";
+
+    for(size_t i = 0; i<network.getAdjacency_lists().size(); i++)
+    {
+        for(size_t j = 0; j<network.getAdjacency_lists()[i].size(); j++)
+        {
+
+            Arc currentArc = network.getAdjacency_lists()[i][j];
+            if(currentArc.getResidualType())
+            {
+                myfile << currentArc.getOrigin() << "\t" << currentArc.getDestination() << "\t" << currentArc.getFlow() << "\n\n";
+            }
+        }
+    }
+
+    myfile.close();
+}
 

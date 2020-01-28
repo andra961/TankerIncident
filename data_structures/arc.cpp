@@ -73,3 +73,27 @@ void Arc::setResidual(int value)
 {
     residual = value;
 }
+
+void Arc::pushFlow(int flow)
+{
+    if(this->residualType)
+    {
+        this->setFlow(this->getFlow() + flow);
+    }
+    else
+    {
+        this->setFlow(this->getFlow() - flow);
+    }
+
+    int j = 0;
+}
+
+bool Arc::getResidualType() const
+{
+    return residualType;
+}
+
+void Arc::setResidualType(bool value)
+{
+    residualType = value;
+}

@@ -25,3 +25,13 @@ void pFPnode::setDistanceLabel(int value)
 {
     distanceLabel = value;
 }
+
+void pFPnode::increaseExcess(int delta)
+{
+    this->excess += delta;
+}
+
+void pFPnode::decreaseExcess(int delta)
+{
+    this->excess -= delta;
+}

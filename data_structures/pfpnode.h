@@ -13,6 +13,9 @@ public:
     int getDistanceLabel() const;
     void setDistanceLabel(int value);
 
+    void increaseExcess(int delta);
+    void decreaseExcess(int delta);
+
 protected:
     int distanceLabel;
     int excess;

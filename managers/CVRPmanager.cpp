@@ -273,8 +273,8 @@ void CVRPmanager::on_loadFilePushButton_clicked() {
     }
     */
 
-    Adjacency_list network(14);
-    network.addArc(0,0,1,5);
+    Adjacency_list network(4);
+    /*network.addArc(0,0,1,5);
     network.addArc(0,0,2,5);
     network.addArc(0,0,4,5);
     network.addArc(0,1,3,5);
@@ -292,16 +292,24 @@ void CVRPmanager::on_loadFilePushButton_clicked() {
     network.addArc(0,2,4,5);
     network.addArc(0,6,3,5);
     network.addArc(0,10,8,5);
-    network.addArc(0,11,13,5);
+    network.addArc(0,11,13,5);*/
+
+    network.addArc(0,0,1,2);
+    network.addArc(0,0,2,4);
+    network.addArc(0,1,3,1);
+    network.addArc(0,1,2,3);
+    network.addArc(0,2,3,5);
 
     //Adjacency_list residual = convertToResidual(network);
-    std::vector<pFPnode> nodes;
+    /*std::vector<pFPnode> nodes;
     nodes.resize(14);
     //computeDistanceLabels(network, nodes);
 
     preProcess(network,nodes);
     int i = 0;
-    i++;
+    i++;*/
+
+    preFlowPush(network);
 }
 
 /**

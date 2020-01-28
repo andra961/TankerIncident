@@ -22,6 +22,11 @@ public:
     int getResidual() const;
     void setResidual(int value);
 
+    void pushFlow(int flow);
+
+    bool getResidualType() const;
+    void setResidualType(bool value);
+
 protected:
     bool residualType;
     int origin;
