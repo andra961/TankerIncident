@@ -273,7 +273,35 @@ void CVRPmanager::on_loadFilePushButton_clicked() {
     }
     */
 
-    Adjacency_list network(4);
+    Adjacency_list network(12);
+
+
+    //third topology
+    network.addArc(0,0,1,4);
+    network.addArc(0,0,4,3);
+    network.addArc(0,0,7,7);
+    network.addArc(0,0,2,6);
+    network.addArc(0,1,3,6);
+    network.addArc(0,1,6,4);
+    network.addArc(0,1,10,12);
+    network.addArc(0,1,4,2);
+    network.addArc(0,2,4,1);
+    network.addArc(0,2,8,2);
+    network.addArc(0,2,5,8);
+    network.addArc(0,3,11,10);
+    network.addArc(0,4,7,4);
+    network.addArc(0,5,8,6);
+    network.addArc(0,6,9,4);
+    network.addArc(0,7,9,3);
+    network.addArc(0,7,11,10);
+    network.addArc(0,7,8,5);
+    network.addArc(0,8,11,10);
+    network.addArc(0,9,11,10);
+    network.addArc(0,10,11,10);
+
+
+
+    //second topology
     /*network.addArc(0,0,1,5);
     network.addArc(0,0,2,5);
     network.addArc(0,0,4,5);
@@ -294,11 +322,13 @@ void CVRPmanager::on_loadFilePushButton_clicked() {
     network.addArc(0,10,8,5);
     network.addArc(0,11,13,5);*/
 
-    network.addArc(0,0,1,2);
+
+    //first topology
+    /*network.addArc(0,0,1,2);
     network.addArc(0,0,2,4);
     network.addArc(0,1,3,1);
     network.addArc(0,1,2,3);
-    network.addArc(0,2,3,5);
+    network.addArc(0,2,3,5);*/
 
     //Adjacency_list residual = convertToResidual(network);
     /*std::vector<pFPnode> nodes;

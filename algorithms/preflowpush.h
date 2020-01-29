@@ -19,6 +19,6 @@ void preProcess(Adjacency_list& network, std::vector<pFPnode>& nodes);
 
 void preFlowPush(Adjacency_list& network);
 
-void writeResultsOnFile(Adjacency_list& network,std::string& path);
+void writeResultsOnFile(Adjacency_list& network,std::vector<pFPnode>& nodes,std::string& path);
 
 #endif // PREFLOWPUSH_H

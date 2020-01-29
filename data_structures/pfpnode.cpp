@@ -13,7 +13,7 @@ int pFPnode::getExcess() const
 
 void pFPnode::setExcess(int value)
 {
-    excess = value;
+    this->excess = value;
 }
 
 int pFPnode::getDistanceLabel() const

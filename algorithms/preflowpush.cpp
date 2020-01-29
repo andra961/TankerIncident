@@ -230,15 +230,17 @@ void preFlowPush(Adjacency_list& network)
 
     std::string path = "/home/andrea/preFlow_results";
 
-    writeResultsOnFile(residualNetwork,path);
+    writeResultsOnFile(residualNetwork,nodes,path);
 }
 
-void writeResultsOnFile(Adjacency_list& network,std::string& path)
+void writeResultsOnFile(Adjacency_list& network,std::vector<pFPnode>& nodes,std::string& path)
 {
     std::ofstream myfile (path);
 
-    myfile << "i,      j,      uij";
+    myfile << "i,      j,      xij";
     myfile << "\n\n";
+
+    int flow = 0;
 
     for(size_t i = 0; i<network.getAdjacency_lists().size(); i++)
     {
@@ -248,10 +250,13 @@ void writeResultsOnFile(Adjacency_list& network,std::string& path)
             Arc currentArc = network.getAdjacency_lists()[i][j];
             if(currentArc.getResidualType())
             {
+                flow += currentArc.getFlow();
                 myfile << currentArc.getOrigin() << "\t" << currentArc.getDestination() << "\t" << currentArc.getFlow() << "\n\n";
             }
         }
     }
+
+    myfile << "Il flusso massimo passante per la rete è:" << nodes.back().getExcess();
 
     myfile.close();
 }
