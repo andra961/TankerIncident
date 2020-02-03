@@ -3,7 +3,7 @@
 Adjacency_list convertToResidual(Adjacency_list& network)
 {
 
-    Adjacency_list residualNetwork = Adjacency_list(network.getAdjacency_lists().size());
+    Adjacency_list residualNetwork = Adjacency_list(network.getNNodes(),network.getSource(),network.getSource());
 
     for(size_t i = 0; i<network.getAdjacency_lists().size(); i++)
     {
@@ -27,26 +27,26 @@ Adjacency_list convertToResidual(Adjacency_list& network)
     return residualNetwork;
 }
 
-bool hasActiveNodes(std::vector<pFPnode>& nodes)
+bool hasActiveNodes(std::vector<pFPnode>& nodes,size_t source, size_t sink)
 {
     bool hasActiveNodes = 0;
 
-    for(size_t i = 1;i < nodes.size() -1;i++)
+    for(size_t i = 0;i < nodes.size();i++)
     {
-        if(nodes[i].getExcess() > 0) hasActiveNodes = 1;
+        if(nodes[i].getExcess() > 0 && i != source && i != sink) hasActiveNodes = 1;
     }
 
     return hasActiveNodes;
 }
 
-size_t getHighestLabelActiveNode(std::vector<pFPnode>& nodes)
+size_t getHighestLabelActiveNode(std::vector<pFPnode>& nodes,size_t source, size_t sink)
 {
     int currentDistance = 0;
     size_t activeNode = 0;
 
-    for(size_t i = 1;i < nodes.size() -1;i++)
+    for(size_t i = 0;i < nodes.size();i++)
     {
-        if(nodes[i].getExcess() > 0 && nodes[i].getDistanceLabel() > currentDistance)
+        if(nodes[i].getExcess() > 0 && i != source && i != sink && nodes[i].getDistanceLabel() > currentDistance)
         {
             currentDistance = nodes[i].getDistanceLabel();
             activeNode = i;
@@ -58,6 +58,7 @@ size_t getHighestLabelActiveNode(std::vector<pFPnode>& nodes)
 
 void computeDistanceLabels(Adjacency_list& network,std::vector<pFPnode>& nodes)
 {
+
     //l'array contenente i marchi inizializzato a 0 per tutti i nodi
     bool marks[nodes.size()];
     for(size_t i = 0;i < nodes.size();i++)
@@ -67,11 +68,11 @@ void computeDistanceLabels(Adjacency_list& network,std::vector<pFPnode>& nodes)
     //la coda usata per salvare i nodi di cui esplorare i predecessori
     std::queue<int> list;
     //marchio il pozzo
-    marks[nodes.size()-1] = 1;
+    marks[network.getSink()] = 1;
     //setto la sua distance label a 0
-    nodes[nodes.size()-1].setDistanceLabel(0);
+    nodes[network.getSink()].setDistanceLabel(0);
     //inserisco il pozzo nella coda
-    list.push(nodes.size()-1);
+    list.push(network.getSink());
     //finchè la coda ha elementi:
     while(list.size()>0)
     {
@@ -109,18 +110,21 @@ void preProcess(Adjacency_list& network, std::vector<pFPnode>& nodes)
 {
     //calcolo le distance label della rete
     computeDistanceLabels(network, nodes);
+
+    size_t source = network.getSource();
+
     //scorro tutti i nodi uscenti dalla sorgente s
-    for(size_t i = 0; i<network.getAdjacency_lists()[0].size();i++)
+    for(size_t i = 0; i<network.getAdjacency_lists()[source].size();i++)
     {
         //capacità massima dell'arco
-        int flowAmount = network.getAdjacency_lists()[0][i].getCapacity();
+        int flowAmount = network.getAdjacency_lists()[source][i].getCapacity();
         //saturo l'arco
-        network.getAdjacency_lists()[0][i].setFlow(flowAmount);
+        network.getAdjacency_lists()[source][i].setFlow(flowAmount);
         //aumento l'eccesso
-        nodes[network.getAdjacency_lists()[0][i].getDestination()].setExcess(flowAmount);
+        nodes[network.getAdjacency_lists()[source][i].getDestination()].setExcess(flowAmount);
     }
     //imposto d(s) = n
-    nodes.front().setDistanceLabel(nodes.size());
+    nodes[source].setDistanceLabel(nodes.size());
 
 }
 
@@ -211,21 +215,23 @@ void preFlowPush(Adjacency_list& network)
     preProcess(network,nodes);
     Adjacency_list residualNetwork = convertToResidual(network);
 
-    for(size_t i = 0; i<residualNetwork.getAdjacency_lists()[0].size();i++)
+    size_t source = residualNetwork.getSource();
+
+    for(size_t i = 0; i < residualNetwork.getAdjacency_lists()[source].size(); i++)
     {
-        Arc currentArc = residualNetwork.getAdjacency_lists()[0][i];
+        Arc currentArc = residualNetwork.getAdjacency_lists()[source][i];
         //capacità massima dell'arco
-        int flowAmount = residualNetwork.getAdjacency_lists()[0][i].getCapacity();
+        int flowAmount = residualNetwork.getAdjacency_lists()[source][i].getCapacity();
         //saturo l'arco
-        residualNetwork.getAdjacency_lists()[0][i].pushFlow(flowAmount);
+        residualNetwork.getAdjacency_lists()[source][i].pushFlow(flowAmount);
         residualNetwork.getAdjacency_lists()[currentArc.getDestination()][currentArc.getMate()].setFlow(flowAmount);
         //aumento l'eccesso
-        nodes[network.getAdjacency_lists()[0][i].getDestination()].setExcess(flowAmount);
+        nodes[residualNetwork.getAdjacency_lists()[source][i].getDestination()].setExcess(flowAmount);
     }
 
-    while(hasActiveNodes(nodes))
+    while(hasActiveNodes(nodes,network.getSource(),network.getSink()))
     {
-        pushRelabel(residualNetwork,nodes,getHighestLabelActiveNode(nodes));
+        pushRelabel(residualNetwork,nodes,getHighestLabelActiveNode(nodes,network.getSource(),network.getSink()));
     }
 
     std::string path = "/home/andrea/preFlow_results";
@@ -260,4 +266,5 @@ void writeResultsOnFile(Adjacency_list& network,std::vector<pFPnode>& nodes,std:
 
     myfile.close();
 }
+
 

@@ -9,9 +9,9 @@
 
 Adjacency_list convertToResidual(Adjacency_list& network);
 
-bool hasActiveNodes(std::vector<pFPnode>& nodes);
+bool hasActiveNodes(std::vector<pFPnode>& nodes,size_t source, size_t sink);
 
-size_t getHighestLabelActiveNode(std::vector<pFPnode>& nodes);
+size_t getHighestLabelActiveNode(std::vector<pFPnode>& nodes,size_t source, size_t sink);
 
 void computeDistanceLabels(Adjacency_list& network,std::vector<pFPnode>& nodes);
 

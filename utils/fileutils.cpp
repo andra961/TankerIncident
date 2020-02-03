@@ -99,4 +99,35 @@ Topology getTopologyFromFile(const std::string& filename) {
     return topology;
 }
 
+Adjacency_list getTopologyMaxFlowFromFile(const std::string& filename) {
+
+
+    std::ifstream infile;
+    infile.open(filename);
+
+    size_t nNodes,nArcs,source,sink,origin,destination,capacity;
+
+    infile >> nNodes;
+    infile >> nArcs;
+    infile >> source;
+    infile >> sink;
+
+
+
+    Adjacency_list topology = Adjacency_list(nNodes,source,sink);
+
+    for (size_t i = 0; i < nArcs; i++) {
+
+
+        infile >> origin >> destination >> capacity;
+
+        topology.addArc(0,origin,destination,capacity);
+
+    }
+
+    infile.close();
+
+    return topology;
+}
+
 }

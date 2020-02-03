@@ -4,6 +4,7 @@
 #include <vector>
 #include <cg3/geometry/2d/point2d.h>
 #include <data_structures/topology.h>
+#include <data_structures/adjacency_list.h>
 
 namespace FileUtils {
     std::vector<cg3::Point2Dd> getPointsFromFile(const std::string& filename);
@@ -12,6 +13,7 @@ namespace FileUtils {
             double limit,
             int n);
     Topology getTopologyFromFile(const std::string& filename);
+    Adjacency_list getTopologyMaxFlowFromFile(const std::string& filename);
 }
 
 #endif // FILEUTILS_H

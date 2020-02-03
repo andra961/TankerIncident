@@ -104,18 +104,7 @@ void CVRPmanager::computeCvrpAlgorithm(const Topology& topology) {
     case(7):
         cWparRandomized(topology,this->singleRoutes);
         break;
-    /*case(8):
-
-        Adjacency_list network(4);
-        network.addArc(0,1,10,0,10);
-        network.addArc(0,2,6,0,6);
-        network.addArc(1,2,1,0,1);
-        network.addArc(1,3,8,0,8);
-        network.addArc(2,3,10,0,10);
-
-        Adjacency_list residual = convertToResidual(network);
-        int i = 0;
-        i++;*/
+    /*case(8):*/
     }
 }
 
@@ -208,28 +197,28 @@ void CVRPmanager::fitScene() {
  */
 void CVRPmanager::on_loadFilePushButton_clicked() {
     //File selector
-    /*QString filename = QFileDialog::getOpenFileName(nullptr,
+    QString filename = QFileDialog::getOpenFileName(nullptr,
                        "Open points",
                        ".",
                        "*.txt");
 
     if (!filename.isEmpty()) {
-
+        /*
         //Delete from the canvas the routes
         eraseDrawnRoutes();
 
         //Clear current data
         clearRoutes();
-
+        */
 
 
         std::string name = filename.toStdString();
 
         //Load the topology from the file
 
-        Topology topology = FileUtils::getTopologyFromFile(filename.toStdString());
+        Adjacency_list network = FileUtils::getTopologyMaxFlowFromFile(filename.toStdString());
 
-
+        /*
         int selected = this->ui->selectVersion->currentIndex();
 
         switch(selected)
@@ -268,78 +257,17 @@ void CVRPmanager::on_loadFilePushButton_clicked() {
         writeOnExistingFile(this->singleRoutes,topology.getNode_num(),name,time);
 
         //Draw the routes
-        drawRoutes();
+        drawRoutes();*/
+
+        //Adjacency_list residual = convertToResidual(network);
+        std::vector<pFPnode> nodes;
+        nodes.resize(network.getNNodes());
+        computeDistanceLabels(network, nodes);
+
+        preProcess(network,nodes);
+        preFlowPush(network);
 
     }
-    */
-
-    Adjacency_list network(12);
-
-
-    //third topology
-    network.addArc(0,0,1,4);
-    network.addArc(0,0,4,3);
-    network.addArc(0,0,7,7);
-    network.addArc(0,0,2,6);
-    network.addArc(0,1,3,6);
-    network.addArc(0,1,6,4);
-    network.addArc(0,1,10,12);
-    network.addArc(0,1,4,2);
-    network.addArc(0,2,4,1);
-    network.addArc(0,2,8,2);
-    network.addArc(0,2,5,8);
-    network.addArc(0,3,11,10);
-    network.addArc(0,4,7,4);
-    network.addArc(0,5,8,6);
-    network.addArc(0,6,9,4);
-    network.addArc(0,7,9,3);
-    network.addArc(0,7,11,10);
-    network.addArc(0,7,8,5);
-    network.addArc(0,8,11,10);
-    network.addArc(0,9,11,10);
-    network.addArc(0,10,11,10);
-
-
-
-    //second topology
-    /*network.addArc(0,0,1,5);
-    network.addArc(0,0,2,5);
-    network.addArc(0,0,4,5);
-    network.addArc(0,1,3,5);
-    network.addArc(0,3,0,5);
-    network.addArc(0,4,9,5);
-    network.addArc(0,3,5,5);
-    network.addArc(0,5,6,5);
-    network.addArc(0,5,10,5);
-    network.addArc(0,6,7,5);
-    network.addArc(0,7,11,5);
-    network.addArc(0,9,12,5);
-    network.addArc(0,12,8,5);
-    network.addArc(0,8,9,5);
-    network.addArc(0,8,13,5);
-    network.addArc(0,2,4,5);
-    network.addArc(0,6,3,5);
-    network.addArc(0,10,8,5);
-    network.addArc(0,11,13,5);*/
-
-
-    //first topology
-    /*network.addArc(0,0,1,2);
-    network.addArc(0,0,2,4);
-    network.addArc(0,1,3,1);
-    network.addArc(0,1,2,3);
-    network.addArc(0,2,3,5);*/
-
-    //Adjacency_list residual = convertToResidual(network);
-    /*std::vector<pFPnode> nodes;
-    nodes.resize(14);
-    //computeDistanceLabels(network, nodes);
-
-    preProcess(network,nodes);
-    int i = 0;
-    i++;*/
-
-    preFlowPush(network);
 }
 
 /**

@@ -1,8 +1,11 @@
 #include "adjacency_list.h"
 
-Adjacency_list::Adjacency_list(int nNodes)
+Adjacency_list::Adjacency_list(size_t nNodes,size_t source, size_t sink)
 {
- this->adjacency_lists.resize(nNodes);
+    this->adjacency_lists.resize(nNodes);
+    this->nNodes = nNodes;
+    this->source = source;
+    this->sink = sink;
 }
 
 void Adjacency_list::addArc(bool residualType,int origin, int destination, int capacity)
@@ -46,4 +49,19 @@ bool Adjacency_list::deleteArc(int origin, int destination)
 std::vector<std::vector<Arc>>& Adjacency_list::getAdjacency_lists()
 {
     return adjacency_lists;
+}
+
+size_t Adjacency_list::getNNodes() const
+{
+    return nNodes;
+}
+
+size_t Adjacency_list::getSource() const
+{
+    return source;
+}
+
+size_t Adjacency_list::getSink() const
+{
+    return sink;
 }
