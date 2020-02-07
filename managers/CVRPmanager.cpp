@@ -210,14 +210,6 @@ void CVRPmanager::on_loadFilePushButton_clicked() {
         //Clear current data
         clearRoutes();
         */
-
-
-        std::string name = filename.toStdString();
-
-        //Load the topology from the file
-
-        Adjacency_list network = FileUtils::getTopologyMaxFlowFromFile(filename.toStdString());
-
         /*
         int selected = this->ui->selectVersion->currentIndex();
 
@@ -260,12 +252,30 @@ void CVRPmanager::on_loadFilePushButton_clicked() {
         drawRoutes();*/
 
         //Adjacency_list residual = convertToResidual(network);
-        std::vector<pFPnode> nodes;
-        nodes.resize(network.getNNodes());
-        computeDistanceLabels(network, nodes);
 
-        preProcess(network,nodes);
-        preFlowPush(network);
+
+
+        std::string name = filename.toStdString();
+
+        //Load the topology from the file
+
+        Adjacency_list network = FileUtils::getTopologyMaxFlowFromFile(name);
+
+        Adjacency_list residualNetwork = convertToResidual(network);
+
+        cg3::Timer t("Computing preFlowPush");
+
+        double maxFlow = preFlowPush(residualNetwork);
+
+        //Timer stop and visualization (both on console and UI)
+        t.stopAndPrint();
+        ui->timeLabel->setNum(t.delay());
+
+        time = t.delay();
+        std::cout << std::endl;
+
+        name += "_preFlow_results";
+        writePreFlowResultsOnFile(residualNetwork,maxFlow,name,time);
 
     }
 }

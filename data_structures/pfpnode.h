@@ -7,18 +7,18 @@ class pFPnode
 public:
     pFPnode();
 
-    int getExcess() const;
-    void setExcess(int value);
+    double getExcess() const;
+    void setExcess(double value);
 
     int getDistanceLabel() const;
     void setDistanceLabel(int value);
 
-    void increaseExcess(int delta);
-    void decreaseExcess(int delta);
+    void increaseExcess(double delta);
+    void decreaseExcess(double delta);
 
 protected:
     int distanceLabel;
-    int excess;
+    double excess;
 };
 
 #endif // PFPNODE_H

@@ -8,7 +8,7 @@ Adjacency_list::Adjacency_list(size_t nNodes,size_t source, size_t sink)
     this->sink = sink;
 }
 
-void Adjacency_list::addArc(bool residualType,int origin, int destination, int capacity)
+void Adjacency_list::addArc(bool residualType,int origin, int destination, double capacity)
 {
     Arc arc = Arc(residualType,origin,destination,capacity);
     this->adjacency_lists[origin].push_back(arc);
@@ -19,7 +19,7 @@ void Adjacency_list::addArc(int origin, Arc arc)
     this->adjacency_lists[origin].push_back(arc);
 }
 
-bool Adjacency_list::updateArc(bool residualType,int origin, int destination, int capacity)
+bool Adjacency_list::updateArc(bool residualType,int origin, int destination, double capacity)
 {
     size_t size = this->adjacency_lists[origin].size();
     for(size_t i = 0; i< size; i++){

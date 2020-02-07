@@ -105,12 +105,16 @@ Adjacency_list getTopologyMaxFlowFromFile(const std::string& filename) {
     std::ifstream infile;
     infile.open(filename);
 
-    size_t nNodes,nArcs,source,sink,origin,destination,capacity;
+    size_t nNodes,nArcs,source,sink,origin,destination;
+    double capacity;
 
     infile >> nNodes;
     infile >> nArcs;
     infile >> source;
     infile >> sink;
+
+    source--;
+    sink--;
 
 
 
@@ -120,6 +124,9 @@ Adjacency_list getTopologyMaxFlowFromFile(const std::string& filename) {
 
 
         infile >> origin >> destination >> capacity;
+
+        origin--;
+        destination--;
 
         topology.addArc(0,origin,destination,capacity);
 

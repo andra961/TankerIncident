@@ -2,16 +2,16 @@
 
 pFPnode::pFPnode()
 {
-    this->distanceLabel = 1000;
+    this->distanceLabel = 10000;
     this->excess = 0;
 }
 
-int pFPnode::getExcess() const
+double pFPnode::getExcess() const
 {
     return excess;
 }
 
-void pFPnode::setExcess(int value)
+void pFPnode::setExcess(double value)
 {
     excess = value;
 }
@@ -26,12 +26,12 @@ void pFPnode::setDistanceLabel(int value)
     distanceLabel = value;
 }
 
-void pFPnode::increaseExcess(int delta)
+void pFPnode::increaseExcess(double delta)
 {
     this->excess += delta;
 }
 
-void pFPnode::decreaseExcess(int delta)
+void pFPnode::decreaseExcess(double delta)
 {
     this->excess -= delta;
 }

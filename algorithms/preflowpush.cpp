@@ -3,7 +3,7 @@
 Adjacency_list convertToResidual(Adjacency_list& network)
 {
 
-    Adjacency_list residualNetwork = Adjacency_list(network.getNNodes(),network.getSource(),network.getSource());
+    Adjacency_list residualNetwork = Adjacency_list(network.getNNodes(),network.getSource(),network.getSink());
 
     for(size_t i = 0; i<network.getAdjacency_lists().size(); i++)
     {
@@ -78,26 +78,27 @@ void computeDistanceLabels(Adjacency_list& network,std::vector<pFPnode>& nodes)
     {
         //prendo il primo nodo nella coda
         int node = list.front();
-        for(size_t i = 0; i<network.getAdjacency_lists().size(); i++)
+
+        //scorro gli archi uscenti dal nodo node
+        for(size_t i = 0; i<network.getAdjacency_lists()[node].size(); i++)
         {
-            for(size_t j = 0; j<network.getAdjacency_lists()[i].size(); j++)
+            //l'arco uscente dal nodo node
+            Arc outgoingArc = network.getAdjacency_lists()[node][i];
+            //ottengo il suo mate, che sarà quindi entrante in node
+            Arc arc = network.getAdjacency_lists()[outgoingArc.getDestination()][outgoingArc.getMate()];
+
+            if(arc.getResidualType() && arc.getDestination() == node && !marks[arc.getOrigin()])
             {
-                //per ognuno dei suoi archi entranti:
-                Arc arc = network.getAdjacency_lists()[i][j];
-                //se il nodo da cui si origina non è stato già marcato:
-                if(arc.getDestination() == node && !marks[arc.getOrigin()])
+                //marchio il nodo da cui si origina
+                marks[arc.getOrigin()] = 1;
+                //se la distance label del nodo destinazione + 1 è minore di quella attuale del nodo origine:
+                if(nodes[node].getDistanceLabel() + 1 < nodes[arc.getOrigin()].getDistanceLabel())
                 {
-                    //marchio il nodo da cui si origina
-                    marks[arc.getOrigin()] = 1;
-                    //se la distance label del nodo destinazione + 1 è minore di quella attuale del nodo origine:
-                    if(nodes[node].getDistanceLabel() + 1 < nodes[arc.getOrigin()].getDistanceLabel())
-                    {
-                        //la aggiorno con tale valore
-                        nodes[arc.getOrigin()].setDistanceLabel(nodes[node].getDistanceLabel() + 1);
-                    }
-                    //aggiungo il nodo origine infondo alla coda
-                    list.push(arc.getOrigin());
+                    //la aggiorno con tale valore
+                    nodes[arc.getOrigin()].setDistanceLabel(nodes[node].getDistanceLabel() + 1);
                 }
+                //aggiungo il nodo origine infondo alla coda
+                list.push(arc.getOrigin());
             }
         }
         //rimuovo il primo nodo dalla coda
@@ -114,17 +115,20 @@ void preProcess(Adjacency_list& network, std::vector<pFPnode>& nodes)
     size_t source = network.getSource();
 
     //scorro tutti i nodi uscenti dalla sorgente s
-    for(size_t i = 0; i<network.getAdjacency_lists()[source].size();i++)
+    for(size_t i = 0; i < network.getAdjacency_lists()[source].size(); i++)
     {
+        Arc currentArc = network.getAdjacency_lists()[source][i];
         //capacità massima dell'arco
-        int flowAmount = network.getAdjacency_lists()[source][i].getCapacity();
+        double flowAmount = network.getAdjacency_lists()[source][i].getCapacity();
         //saturo l'arco
-        network.getAdjacency_lists()[source][i].setFlow(flowAmount);
+        network.getAdjacency_lists()[source][i].pushFlow(flowAmount);
+        network.getAdjacency_lists()[currentArc.getDestination()][currentArc.getMate()].setFlow(flowAmount);
         //aumento l'eccesso
         nodes[network.getAdjacency_lists()[source][i].getDestination()].setExcess(flowAmount);
     }
+
     //imposto d(s) = n
-    nodes[source].setDistanceLabel(nodes.size());
+    nodes[source].setDistanceLabel(network.getNNodes());
 
 }
 
@@ -142,9 +146,9 @@ void pushRelabel(Adjacency_list& network, std::vector<pFPnode>& nodes, size_t ac
             //ho trovato un arco ammissibile
             hasAdmArc = 1;
             //il flusso corrente nell'arco ammissibile
-            int oldFlow = network.getAdjacency_lists()[activeNode][i].getFlow();
-            int deltaFlow = 0;
-            int newFlow = 0;
+            double oldFlow = network.getAdjacency_lists()[activeNode][i].getFlow();
+            double deltaFlow = 0;
+            double newFlow = 0;
 
             //se il residuale è minore dell'eccesso di i:
             if(current.getResidual() <= nodes[current.getOrigin()].getExcess())
@@ -207,46 +211,29 @@ void pushRelabel(Adjacency_list& network, std::vector<pFPnode>& nodes, size_t ac
     }
 }
 
-void preFlowPush(Adjacency_list& network)
+double preFlowPush(Adjacency_list& residualNetwork)
 {
     std::vector<pFPnode> nodes;
-    nodes.resize(network.getAdjacency_lists().size());
+    nodes.resize(residualNetwork.getNNodes());
 
-    preProcess(network,nodes);
-    Adjacency_list residualNetwork = convertToResidual(network);
+    preProcess(residualNetwork,nodes);
 
-    size_t source = residualNetwork.getSource();
 
-    for(size_t i = 0; i < residualNetwork.getAdjacency_lists()[source].size(); i++)
+    while(hasActiveNodes(nodes,residualNetwork.getSource(),residualNetwork.getSink()))
     {
-        Arc currentArc = residualNetwork.getAdjacency_lists()[source][i];
-        //capacità massima dell'arco
-        int flowAmount = residualNetwork.getAdjacency_lists()[source][i].getCapacity();
-        //saturo l'arco
-        residualNetwork.getAdjacency_lists()[source][i].pushFlow(flowAmount);
-        residualNetwork.getAdjacency_lists()[currentArc.getDestination()][currentArc.getMate()].setFlow(flowAmount);
-        //aumento l'eccesso
-        nodes[residualNetwork.getAdjacency_lists()[source][i].getDestination()].setExcess(flowAmount);
+        pushRelabel(residualNetwork,nodes,getHighestLabelActiveNode(nodes,residualNetwork.getSource(),residualNetwork.getSink()));
     }
 
-    while(hasActiveNodes(nodes,network.getSource(),network.getSink()))
-    {
-        pushRelabel(residualNetwork,nodes,getHighestLabelActiveNode(nodes,network.getSource(),network.getSink()));
-    }
-
-    std::string path = "/home/andrea/preFlow_results";
-
-    writeResultsOnFile(residualNetwork,nodes,path);
+    //restituisco il max flow
+    return nodes[residualNetwork.getSink()].getExcess();
 }
 
-void writeResultsOnFile(Adjacency_list& network,std::vector<pFPnode>& nodes,std::string& path)
+void writePreFlowResultsOnFile(Adjacency_list& network,double maxFlow,std::string& path,const double& time)
 {
     std::ofstream myfile (path);
 
     myfile << "i,      j,      xij";
     myfile << "\n\n";
-
-    int flow = 0;
 
     for(size_t i = 0; i<network.getAdjacency_lists().size(); i++)
     {
@@ -256,13 +243,16 @@ void writeResultsOnFile(Adjacency_list& network,std::vector<pFPnode>& nodes,std:
             Arc currentArc = network.getAdjacency_lists()[i][j];
             if(currentArc.getResidualType())
             {
-                flow += currentArc.getFlow();
                 myfile << currentArc.getOrigin() << "\t" << currentArc.getDestination() << "\t" << currentArc.getFlow() << "\n\n";
             }
         }
     }
 
-    myfile << "Il flusso massimo passante per la rete è:" << nodes.back().getExcess();
+    myfile << "Il flusso massimo passante per la rete è:" << maxFlow;
+
+    myfile << "\n\n";
+
+    myfile << "Il tempo impiegato per l'esecuzione è:" << time;
 
     myfile.close();
 }

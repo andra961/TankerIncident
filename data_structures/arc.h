@@ -5,24 +5,24 @@
 class Arc
 {
 public:
-    Arc(bool residualType,int origin,int destination,int capacity);
+    Arc(bool residualType,int origin,int destination,double capacity);
 
     int getOrigin() const;
 
     int getDestination() const;
 
-    int getCapacity() const;
+    double getCapacity() const;
 
-    int getFlow() const;
-    void setFlow(int value);
+    double getFlow() const;
+    void setFlow(double value);
 
     size_t getMate() const;
     void setMate(const size_t &value);
 
-    int getResidual() const;
-    void setResidual(int value);
+    double getResidual() const;
+    void setResidual(double value);
 
-    void pushFlow(int flow);
+    void pushFlow(double flow);
 
     bool getResidualType() const;
     void setResidualType(bool value);
@@ -31,8 +31,8 @@ protected:
     bool residualType;
     int origin;
     int destination;
-    int capacity;
-    int flow;
+    double capacity;
+    double flow;
     int residual;
     size_t mate;
 };

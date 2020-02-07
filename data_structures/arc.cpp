@@ -1,6 +1,6 @@
 #include "arc.h"
 
-Arc::Arc(bool residualType,int origin,int destination, int capacity)
+Arc::Arc(bool residualType,int origin,int destination, double capacity)
 {
     this->origin = origin;
     this->destination = destination;
@@ -30,17 +30,17 @@ int Arc::getDestination() const
     return destination;
 }
 
-int Arc::getCapacity() const
+double Arc::getCapacity() const
 {
     return capacity;
 }
 
-int Arc::getFlow() const
+double Arc::getFlow() const
 {
     return flow;
 }
 
-void Arc::setFlow(int value)
+void Arc::setFlow(double value)
 {
     flow = value;
     if(this->residualType){
@@ -64,17 +64,17 @@ void Arc::setMate(const size_t &value)
     mate = value;
 }
 
-int Arc::getResidual() const
+double Arc::getResidual() const
 {
     return residual;
 }
 
-void Arc::setResidual(int value)
+void Arc::setResidual(double value)
 {
     residual = value;
 }
 
-void Arc::pushFlow(int flow)
+void Arc::pushFlow(double flow)
 {
     if(this->residualType)
     {
@@ -84,8 +84,6 @@ void Arc::pushFlow(int flow)
     {
         this->setFlow(this->getFlow() - flow);
     }
-
-    int j = 0;
 }
 
 bool Arc::getResidualType() const

@@ -9,9 +9,9 @@ class Adjacency_list
 {
 public:
     Adjacency_list(size_t nNodes,size_t source, size_t sink);
-    void addArc(bool residualType,int origin, int destination, int capacity);
+    void addArc(bool residualType,int origin, int destination, double capacity);
     void addArc(int origin, Arc arc);
-    bool updateArc(bool residualType,int origin, int destination, int capacity);
+    bool updateArc(bool residualType,int origin, int destination, double capacity);
     bool deleteArc(int origin, int destination);
 
     std::vector<std::vector<Arc>>& getAdjacency_lists();
