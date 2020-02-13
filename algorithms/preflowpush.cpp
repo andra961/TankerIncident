@@ -241,18 +241,47 @@ void writePreFlowResultsOnFile(Adjacency_list& network,double maxFlow,std::strin
         {
 
             Arc currentArc = network.getAdjacency_lists()[i][j];
-            if(currentArc.getResidualType())
+            if(currentArc.getResidualType() && currentArc.getFlow() > 0)
             {
-                myfile << currentArc.getOrigin() << "\t" << currentArc.getDestination() << "\t" << currentArc.getFlow() << "\n\n";
+                myfile << currentArc.getOrigin() + 1 << "\t" << currentArc.getDestination() + 1 << "\t" << currentArc.getFlow() << "\n\n";
             }
         }
     }
 
-    myfile << "Il flusso massimo passante per la rete è:" << maxFlow;
-
     myfile << "\n\n";
 
+    myfile << "Il flusso massimo passante per la rete è:" << maxFlow;
+
+    myfile << "Il flusso massimo passante per la rete è:" << maxFlow;
+
+
+
     myfile << "Il tempo impiegato per l'esecuzione è:" << time;
+
+    myfile << "\n\n\n";
+
+    myfile << "　 　　　　　　　 　　　　　 /ﾟ　　　　。";
+    myfile << "\n" << "　　　 　 　 　 　　　　　 ／　．　　ﾟ";
+    myfile << "\n" << "　　　　　　　　　　　,　'　　　　。　　・";
+    myfile << "\n" << "` ー　 ＿ 　 - 　'　　　゜";
+    myfile << "\n" << "。　　　　　　　．　　　　　　。　　ﾟ";
+    myfile << "\n" << "　　　　：　　　　　。";
+    myfile << "\n" << "ﾟ　　　　　　　　　　　　　．";
+    myfile << "\n" << "　 ヾ冖ﾌ 　   ヾス";
+    myfile << "\n" << "　　 [,]　　　 []";
+    myfile << "\n" << "　　 |.|　 /|,ィ.!";
+    myfile << "\n" << ".　　 ! }.r`j7!";
+    myfile << "\n" << "　　　 !｀､亠 {";
+    myfile << "\n" << "　　　  } / _,/,j";
+    myfile << "\n" << "　　　  ヽｼ_,-i{";
+    myfile << "\n" << "　　 　 /`´~ﾊﾞ}";
+    myfile << "\n" << ".　　　/　　　 j   !";
+    myfile << "\n" << "　 　 ∧　''/`,ｲ";
+    myfile << "\n" << "　　　!　ヽ '/|_　 j";
+    myfile << "\n" << "　　/ ＼,/　 }＼,!";
+    myfile << "\n" << "　 .ｧ､ヽｨ 　  <`-ｲ";
+    myfile << "\n" << ".　 |.`iT. 　 ヽ　j";
+    myfile << "\n" << "　　＼||' 　　　 `'";
 
     myfile.close();
 }
