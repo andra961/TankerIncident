@@ -252,11 +252,7 @@ void writePreFlowResultsOnFile(Adjacency_list& network,double maxFlow,std::strin
 
     myfile << "Il flusso massimo passante per la rete è:" << maxFlow;
 
-    myfile << "Il flusso massimo passante per la rete è:" << maxFlow;
-
-
-
-    myfile << "Il tempo impiegato per l'esecuzione è:" << time;
+    myfile << "\n\nIl tempo impiegato per l'esecuzione è:" << time;
 
     myfile << "\n\n\n";
 
@@ -275,9 +271,9 @@ void writePreFlowResultsOnFile(Adjacency_list& network,double maxFlow,std::strin
     myfile << "\n" << "　　　  } / _,/,j";
     myfile << "\n" << "　　　  ヽｼ_,-i{";
     myfile << "\n" << "　　 　 /`´~ﾊﾞ}";
-    myfile << "\n" << ".　　　/　　　 j   !";
-    myfile << "\n" << "　 　 ∧　''/`,ｲ";
-    myfile << "\n" << "　　　!　ヽ '/|_　 j";
+    myfile << "\n" << ".　　　/　　　 j";
+    myfile << "\n" << "　 　 ∧　''/`, ｲ";
+    myfile << "\n" << "　　　!　ヽ '/|_ j";
     myfile << "\n" << "　　/ ＼,/　 }＼,!";
     myfile << "\n" << "　 .ｧ､ヽｨ 　  <`-ｲ";
     myfile << "\n" << ".　 |.`iT. 　 ヽ　j";
