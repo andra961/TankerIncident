@@ -266,10 +266,10 @@ void writePreFlowResultsOnFile(Adjacency_list& network,double maxFlow,std::strin
     myfile << "\n" << "　 ヾ冖ﾌ 　   ヾス";
     myfile << "\n" << "　　 [,]　　　 []";
     myfile << "\n" << "　　 |.|　 /|,ィ.!";
-    myfile << "\n" << ".　　 ! }.r`j7!";
-    myfile << "\n" << "　　　 !｀､亠 {";
-    myfile << "\n" << "　　　  } / _,/,j";
-    myfile << "\n" << "　　　  ヽｼ_,-i{";
+    myfile << "\n" << ".　　 ! }.r`j7!j";
+    myfile << "\n" << "　　　 !｀､亠 {}";
+    myfile << "\n" << "　　　  } / _,/,";
+    myfile << "\n" << "　　　  ヽｼ_,-i";
     myfile << "\n" << "　　 　 /`´~ﾊﾞ}";
     myfile << "\n" << ".　　　/　　　 j";
     myfile << "\n" << "　 　 ∧　''/`, ｲ";
