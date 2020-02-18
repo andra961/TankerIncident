@@ -33,7 +33,7 @@ bool hasActiveNodes(std::vector<pFPnode>& nodes,size_t source, size_t sink)
 
     for(size_t i = 0;i < nodes.size();i++)
     {
-        if(nodes[i].getExcess() > 0 && i != source && i != sink) hasActiveNodes = 1;
+        if(nodes[i].getExcess() && nodes[i].getDistanceLabel() != 1000000000 && i != source && i != sink) hasActiveNodes = 1;
     }
 
     return hasActiveNodes;
@@ -46,7 +46,7 @@ size_t getHighestLabelActiveNode(std::vector<pFPnode>& nodes,size_t source, size
 
     for(size_t i = 0;i < nodes.size();i++)
     {
-        if(nodes[i].getExcess() > 0 && i != source && i != sink && nodes[i].getDistanceLabel() > currentDistance)
+        if(nodes[i].getExcess() > 0 && nodes[i].getDistanceLabel() != 1000000000 && i != source && i != sink && nodes[i].getDistanceLabel() > currentDistance)
         {
             currentDistance = nodes[i].getDistanceLabel();
             activeNode = i;
@@ -218,10 +218,15 @@ double preFlowPush(Adjacency_list& residualNetwork)
 
     preProcess(residualNetwork,nodes);
 
+    int iteration = 0;
+
+    std::cout << iteration << "      " << nodes[residualNetwork.getSink()].getExcess() << "\n";
 
     while(hasActiveNodes(nodes,residualNetwork.getSource(),residualNetwork.getSink()))
-    {
+    {    
         pushRelabel(residualNetwork,nodes,getHighestLabelActiveNode(nodes,residualNetwork.getSource(),residualNetwork.getSink()));
+        std::cout << iteration << "      " << nodes[residualNetwork.getSink()].getExcess() << "\n";
+        iteration++;
     }
 
     //restituisco il max flow

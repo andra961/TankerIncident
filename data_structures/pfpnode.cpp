@@ -2,7 +2,7 @@
 
 pFPnode::pFPnode()
 {
-    this->distanceLabel = 1000000;
+    this->distanceLabel = 1000000000;
     this->excess = 0;
 }
 
