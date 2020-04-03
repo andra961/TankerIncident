@@ -17,7 +17,7 @@ void computeDistanceLabels(Adjacency_list& network,std::vector<pFPnode>& nodes);
 
 void preProcess(Adjacency_list& network, std::vector<pFPnode>& nodes);
 
-double preFlowPush(Adjacency_list& network);
+double preFlowPush(Adjacency_list& network,std::string fileName);
 
 void writePreFlowResultsOnFile(Adjacency_list& network,double maxFlow,std::string& path,const double& time);
 

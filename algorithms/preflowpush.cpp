@@ -211,21 +211,27 @@ void pushRelabel(Adjacency_list& network, std::vector<pFPnode>& nodes, size_t ac
     }
 }
 
-double preFlowPush(Adjacency_list& residualNetwork)
+double preFlowPush(Adjacency_list& residualNetwork, std::string fileName)
 {
     std::vector<pFPnode> nodes;
+
+    fileName = fileName.substr(0, fileName.size() - 3);
+
+    fileName += "OF_evolution.csv";
+
+    std::ofstream myfile (fileName);
     nodes.resize(residualNetwork.getNNodes());
 
     preProcess(residualNetwork,nodes);
 
     int iteration = 0;
 
-    std::cout << iteration << "      " << nodes[residualNetwork.getSink()].getExcess() << "\n";
+    myfile << iteration << "," << nodes[residualNetwork.getSink()].getExcess() << "\n";
 
     while(hasActiveNodes(nodes,residualNetwork.getSource(),residualNetwork.getSink()))
     {    
         pushRelabel(residualNetwork,nodes,getHighestLabelActiveNode(nodes,residualNetwork.getSource(),residualNetwork.getSink()));
-        std::cout << iteration << "      " << nodes[residualNetwork.getSink()].getExcess() << "\n";
+        myfile<< iteration << "," << nodes[residualNetwork.getSink()].getExcess() << "\n";
         iteration++;
     }
 

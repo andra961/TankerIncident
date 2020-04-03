@@ -265,7 +265,7 @@ void CVRPmanager::on_loadFilePushButton_clicked() {
 
         cg3::Timer t("Computing preFlowPush");
 
-        double maxFlow = preFlowPush(residualNetwork);
+        double maxFlow = preFlowPush(residualNetwork, name);
 
         //Timer stop and visualization (both on console and UI)
         t.stopAndPrint();
